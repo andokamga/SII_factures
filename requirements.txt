@@ -1,1 +1,2 @@
 reportlab
+fpdf==1.7.2

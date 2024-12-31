@@ -3,6 +3,7 @@ from tkinter import messagebox
 from datetime import datetime
 from ui.product_window import open_product_window
 from ui.invoice_window import open_invoice_window
+from ui.client_window import open_client_window
 
 def launch_main_window():
     # Fenêtre principale
@@ -12,8 +13,8 @@ def launch_main_window():
     # Taille dynamique de la fenêtre (70% de l'écran)
     screen_width = main_window.winfo_screenwidth()
     screen_height = main_window.winfo_screenheight()
-    window_width = int(screen_width * 0.7)
-    window_height = int(screen_height * 0.7)
+    window_width = int(screen_width * 0.9)
+    window_height = int(screen_height * 0.8)
     main_window.geometry(f"{window_width}x{window_height}")
     main_window.config(bg="#f7f7f7")  # Couleur de fond plus claire
     
@@ -31,7 +32,7 @@ def launch_main_window():
     greeting = get_greeting()
     
     # Cadre pour le nom de l'application à gauche et le bouton logout à droite
-    header_frame = tk.Frame(main_window, bg="#ffffff", pady=10)
+    header_frame = tk.Frame(main_window, bg="#f7f7f7", pady=10)
     header_frame.pack(fill="x", padx=20)  # Utilisation de fill="x" pour étendre horizontalement
 
     # Nom de l'application (placé à gauche)
@@ -39,7 +40,7 @@ def launch_main_window():
         header_frame,
         text="SII Factures",
         font=("Arial", 26, "bold"),
-        bg="#ffffff",
+        bg="#f7f7f7",
         fg="#2C3E50"  # Utilisation d'un bleu foncé pour le texte
     )
     app_name_label.pack(side="left", padx=20)  # Placer à gauche dans le cadre
@@ -90,8 +91,9 @@ def launch_main_window():
         messagebox.showinfo("Inscription", "Fenêtre d'inscription ouverte.")
         # Implémentez ici la logique pour ouvrir register_window.py
 
-    def open_client_window():
-        messagebox.showinfo("Gestion des Clients", "Fenêtre de gestion des clients ouverte.")
+    def open_client():
+        open_client_window()
+        #messagebox.showinfo("Gestion des Clients", "Fenêtre de gestion des clients ouverte.")
         # Implémentez ici la logique pour ouvrir client_window.py
 
     def open_product():
@@ -107,7 +109,7 @@ def launch_main_window():
     # Boutons pour accéder aux différentes interfaces
     buttons = [
     ("Gestion des Utilisateurs", open_user_management_window),
-        ("Gestion des Clients", open_client_window),
+        ("Gestion des Clients", open_client),
         ("Gestion des Produits/Services", open_product),
         ("Gestion des Factures", open_invoice),
     ]

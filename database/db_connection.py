@@ -1,11 +1,13 @@
 import sqlite3
+import hashlib
+import os
 
-DB_PATH = "application_data.db"
+DB_PATH = os.path.join(os.path.dirname(__file__), "database.db")
 
 def get_db_connection():
     try:
         conn = sqlite3.connect(DB_PATH)
-        conn.row_factory = sqlite3.Row
+        #conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA foreign_keys = ON;")  # Activer les clés étrangères
         return conn
     except sqlite3.Error as e:
@@ -41,6 +43,7 @@ def initialize_database():
 
         cursor = conn.cursor()
 
+        # Création des tables
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,23 +52,30 @@ def initialize_database():
             role TEXT DEFAULT 'user'
         )
         """)
+        print("Table 'users' créée.")
+
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS clients (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            email TEXT,
-            phone TEXT,
+            email TEXT UNIQUE,
+            phone TEXT NOT NULL UNIQUE,
             address TEXT
         )
         """)
+        print("Table 'clients' créée.")
+
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS products (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             description TEXT,
-            price REAL NOT NULL
+            price REAL NOT NULL,
+            stock_quantity INTEGER DEFAULT 0       
         )
         """)
+        print("Table 'products' créée.")
+
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS invoices (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,9 +83,11 @@ def initialize_database():
             total REAL NOT NULL,
             tax REAL NOT NULL,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (client_id) REFERENCES clients (id)
+            FOREIGN KEY (client_id) REFERENCES clients (id) ON DELETE CASCADE
         )
         """)
+        print("Table 'invoices' créée.")
+
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS invoice_items (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -83,10 +95,12 @@ def initialize_database():
             product_id INTEGER NOT NULL,
             quantity INTEGER NOT NULL,
             price REAL NOT NULL,
-            FOREIGN KEY (invoice_id) REFERENCES invoices (id),
-            FOREIGN KEY (product_id) REFERENCES products (id)
+            FOREIGN KEY (invoice_id) REFERENCES invoices (id) ON DELETE CASCADE,
+            FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
         )
         """)
+        print("Table 'invoice_items' créée.")
+
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS notifications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -94,6 +108,8 @@ def initialize_database():
             sent_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
         """)
+        print("Table 'notifications' créée.")
+
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS backups (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -101,22 +117,23 @@ def initialize_database():
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
         """)
+        print("Table 'backups' créée.")
 
         conn.commit()
-        print("Base de données initialisée avec succès.")
-        insert_test_data(conn)
-
+        print("Toutes les tables ont été créées avec succès.")
     except sqlite3.Error as e:
-        print(f"Erreur lors de l'initialisation de la base de données : {e}")
-    finally:
-        conn.close()
+        print(f"Erreur lors de la création des tables : {e}")
+
+# Fonction pour hacher un mot de passe
+def hash_password(password):
+    return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
 def insert_test_data(conn):
     try:
         cursor = conn.cursor()
 
         # Utilisateurs
-        users = [(f"user{i}", f"password{i}", "user" if i % 2 == 0 else "admin") for i in range(1, 16)]
+        users = [(f"user{i}", hash_password(f"password{i}"), "user" if i % 2 == 0 else "admin") for i in range(1, 16)]
         cursor.executemany("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", users)
 
         # Clients
@@ -124,8 +141,8 @@ def insert_test_data(conn):
         cursor.executemany("INSERT INTO clients (name, email, phone, address) VALUES (?, ?, ?, ?)", clients)
 
         # Produits
-        products = [(f"Produit {i}", f"Description {i}", 10.0 + i * 2) for i in range(1, 16)]
-        cursor.executemany("INSERT INTO products (name, description, price) VALUES (?, ?, ?)", products)
+        products = [(f"Produit {i}", f"Description {i}", 10.0 + i * 2, i * 2) for i in range(1, 16)]
+        cursor.executemany("INSERT INTO products (name, description, price, stock_quantity) VALUES (?, ?, ?, ?)", products)
 
         # Factures et articles
         invoices, invoice_items = [], []
@@ -168,6 +185,9 @@ def insert_test_data(conn):
 
     except sqlite3.Error as e:
         print(f"Erreur lors de l'insertion des données : {e}")
+        
 
 if __name__ == "__main__":
+    conn = get_db_connection()
     initialize_database()
+    insert_test_data(conn)
