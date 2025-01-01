@@ -57,7 +57,7 @@ def open_client_window():
     client_phone_var = tk.StringVar()
     client_address_var = tk.StringVar()
 
-    items_per_page = 10
+    items_per_page = 20
     current_page = 1
     client_database = []
 

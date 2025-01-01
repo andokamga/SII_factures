@@ -324,102 +324,67 @@ def open_invoice_window():
     product_listbox.bind("<Double-Button-1>", on_product_double_click)
     update_products_listbox()
 
-# Fonction pour créer un PDF
     def generate_pdf(invoice):
-    # Récupérer la date et l'heure actuelles
         nonlocal invoice_ref
         current_datetime = datetime.now()
         date_invoice = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
         invoice_ref = current_datetime.strftime("%Y%m%d%H%M%S")
         invoice["ref"] = invoice_ref
-
-    # Obtenir le répertoire utilisateur
-        user_directory = os.path.expanduser("~")  # Répertoire principal de l'utilisateur
-        save_directory = os.path.join(user_directory, "Documents", "Factures")  # Sous-dossier "Documents/Factures"
-
-    # Créer le dossier s'il n'existe pas
+        user_directory = os.path.expanduser("~") 
+        save_directory = os.path.join(user_directory, "Documents", "Factures") 
         if not os.path.exists(save_directory):
             os.makedirs(save_directory)
-
-    # Construire le chemin complet du fichier
         filename = os.path.join(save_directory, f"Facture_{invoice['ref']}.pdf")
         c = canvas.Canvas(filename, pagesize=letter)
         width, height = letter
-
-    # En-tête
         c.setFont("Helvetica-Bold", 16)
         c.drawString(50, height - 50, f"Facture ID: {invoice['ref']}")
         c.setFont("Helvetica", 12)
         c.drawString(50, height - 80, f"Client: {invoice['name']} ({invoice['client']})")
         c.drawString(50, height - 100, f"Téléphone: {invoice['client']}")
         c.drawString(50, height - 120, f"Date de la facture : {date_invoice}")
-
-    # Nom du tableau
         c.setFont("Helvetica-Bold", 14)
         c.drawString(50, height - 150, "Détail de la facture")
-
-    # Définir la position de départ pour le tableau
         y = height - 180
-
-    # Créer les données du tableau
-        table_data = [["Article", "Quantité", "Prix Unitaire (€)", "Total (€)"]]  # En-têtes des colonnes
+        table_data = [["Article", "Quantité", "Prix Unitaire (€)", "Total (€)"]] 
         for item in invoice["items"]:
             table_data.append([item["name"], item["quantity"], f"{item['price']:.2f}", f"{item['total']:.2f}"])
-
-    # Ajouter les taxes et totaux
         table_data.append(["", "", "Taxe:", f"{invoice['tax']:.2f}"])
         table_data.append(["", "", "Total:", f"{invoice['total']:.2f}"])
-
-    # Créer un objet Table
         table = Table(table_data, colWidths=[200, 100, 150, 100])
-
-    # Ajouter du style au tableau
         style = TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),  # Fond gris pour les en-têtes
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),  # Texte blanc pour les en-têtes
-            ('ALIGN', (1, 0), (-1, -1), 'CENTER'),  # Aligner le texte au centre des colonnes
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),  # Police des en-têtes
-            ('FONTSIZE', (0, 0), (-1, -1), 10),  # Taille de la police
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),  # Padding pour les en-têtes
-            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),  # Fond beige pour les lignes
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),  # Bordures du tableau
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey), 
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke), 
+            ('ALIGN', (1, 0), (-1, -1), 'CENTER'), 
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'), 
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12), 
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ])
         table.setStyle(style)
-
-    # Dessiner le tableau sur le PDF
         table.wrapOn(c, width, height)
-        table.drawOn(c, 50, y - len(table_data) * 20)  # Ajuster la position en fonction du nombre de lignes
-
-    # Ajouter des espaces pour les signatures
+        table.drawOn(c, 50, y - len(table_data) * 20) 
         signature_y = y - (len(table_data) + 3) * 20
         c.setFont("Helvetica", 12)
         c.drawString(50, signature_y, "Signature du client :")
-        c.line(200, signature_y, 400, signature_y)  # Ligne pour la signature
+        c.line(200, signature_y, 400, signature_y) 
 
         c.drawString(50, signature_y - 40, "Signature du vendeur :")
-        c.line(200, signature_y - 40, 400, signature_y - 40)  # Ligne pour la signature
-
-    # Sauvegarder le fichier PDF
+        c.line(200, signature_y - 40, 400, signature_y - 40) 
         c.save()
 
         return filename
 
-    # Fonction pour ouvrir et imprimer le PDF
     def open_and_print_pdf(filepath):
-    # Ouvrir le PDF
         try:
-            if os.name == "nt":  # Windows
+            if os.name == "nt": 
                 os.startfile(filepath)
-            else:  # MacOS/Linux
+            else:  
                 webbrowser.open(filepath)
         except Exception as e:
             messagebox.showerror("Erreur", f"Impossible d'ouvrir le fichier : {e}")
 
-    # Imprimer (optionnel)
-    # Vous pouvez ajouter une commande d'impression ici si nécessaire
-    # Exemple pour Linux/Mac : os.system(f"lp {filepath}")
-
-    # Fonction pour gérer l'impression de la facture
     def print_invoice():
         invoice = {
             "id": client_id,
@@ -429,22 +394,18 @@ def open_invoice_window():
             "items": invoice_items.copy(),
             "total": calculate_total_with_tax(),
         }
-                # Créer la facture dans la base de données
         invoice_id = create_invoice(client_id, invoice["total"], invoice["tax"])["id"]
-    
-    # Ajouter les articles de la facture dans la table invoice_items
         for item in invoice_items:
-            add_item_to_invoice(invoice_id, item['id'], item['quantity'], item['price'])
-        # Générer et ouvrir le PDF
-            pdf_path = generate_pdf(invoice)
-            open_and_print_pdf(pdf_path)
-    # Invoice Action Buttons
+            add_item_to_invoice(invoice_id, item['id'], item['quantity'], item['total'])
+        pdf_path = generate_pdf(invoice)
+        open_and_print_pdf(pdf_path)
+
     action_frame = tk.Frame(invoice_window, bg="#f7f7f7")
     action_frame.pack(pady=20)
 
-    tk.Button(action_frame, text="Ajouter Facture", font=("Arial", 14), bg="#27AE60", fg="white", command=add_invoice).pack(side="left", padx=10)
+    tk.Button(action_frame, text="Ajouter", font=("Arial", 14), bg="#27AE60", fg="white", command=add_invoice).pack(side="left", padx=10)
     #tk.Button(action_frame, text="Modifier Facture", font=("Arial", 14), bg="#2980B9", fg="white", command=edit_invoice).pack(side="left", padx=10)
-    tk.Button(action_frame, text="Supprimer Facture", font=("Arial", 14), bg="#C0392B", fg="white", command=delete_invoice).pack(side="left", padx=10)
+    tk.Button(action_frame, text="Supprimer", font=("Arial", 14), bg="#C0392B", fg="white", command=delete_invoice).pack(side="left", padx=10)
     tk.Button(action_frame, text="Imprimer Facture", font=("Arial", 14), bg="#7ED957", fg="black", command=print_invoice).pack(side="left", padx=10)
 
     # Frame Configuration

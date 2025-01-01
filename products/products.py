@@ -215,5 +215,3 @@ def delete_product(product_id):
     finally:
         conn.close()
 
-add_product("Laptop", "Ordinateur portable performant", 1200.99,10)
-filter_products_by_name("10", page=1, items_per_page=5)

@@ -132,11 +132,9 @@ def get_all_invoices(page=1, items_per_page=10):
                 print(invoice)
         else:
             print("Aucune facture trouvée.")
-        
-        # Calculer le nombre total de factures pour la pagination
         cursor.execute("SELECT COUNT(*) FROM invoices")
         total_invoices = cursor.fetchone()[0]
-        total_pages = (total_invoices + items_per_page - 1) // items_per_page  # Arrondi vers le haut
+        total_pages = (total_invoices + items_per_page - 1) // items_per_page  
 
         return {
             "invoices": invoices,
@@ -145,6 +143,54 @@ def get_all_invoices(page=1, items_per_page=10):
             "current_page": page,
             "items_per_page": items_per_page
         }
+    except Exception as e:
+        print(f"Erreur lors de la récupération des factures : {e}")
+        return {
+            "invoices": [],
+            "total_invoices": 0,
+            "total_pages": 0,
+            "current_page": page,
+            "items_per_page": items_per_page
+        }
+    finally:
+        conn.close()
+
+def get_invoices_by_phone(phone, page=1, items_per_page=10):
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM clients WHERE phone = ?", (phone,))
+        client = cursor.fetchone()
+
+        if not client:
+            print(f"Aucun client trouvé avec le numéro de téléphone {phone}.")
+            return {
+                "invoices": [],
+                "total_invoices": 0,
+                "total_pages": 0,
+                "current_page": page,
+                "items_per_page": items_per_page
+            }
+
+        client_id = client[0]
+        print(f"Client ID trouvé : {client_id}")
+        offset = (page - 1) * items_per_page
+        cursor.execute(
+            "SELECT * FROM invoices WHERE client_id = ? LIMIT ? OFFSET ?",
+            (client_id, items_per_page, offset)
+        )
+        invoices = cursor.fetchall()
+        cursor.execute("SELECT COUNT(*) FROM invoices WHERE client_id = ?", (client_id,))
+        total_invoices = cursor.fetchone()[0]
+        total_pages = (total_invoices + items_per_page - 1) // items_per_page
+        return {
+            "invoices": invoices,
+            "total_invoices": total_invoices,
+            "total_pages": total_pages,
+            "current_page": page,
+            "items_per_page": items_per_page
+        }
+
     except Exception as e:
         print(f"Erreur lors de la récupération des factures : {e}")
         return {

@@ -56,7 +56,7 @@ def open_register_window():
     user_password_var = tk.StringVar()
     user_role_var = tk.StringVar()
 
-    items_per_page = 10
+    items_per_page = 20
     current_page = 1
     user_database = []
 

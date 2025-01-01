@@ -134,22 +134,22 @@ def insert_test_data(conn):
         cursor = conn.cursor()
 
         # Utilisateurs
-        users = [(f"user{i}", hash_password(f"password{i}"), "user" if i % 2 == 0 else "admin") for i in range(1, 16)]
+        users = [(f"user{i}", hash_password(f"password{i}"), "user" if i % 2 == 0 else "admin") for i in range(1, 30)]
         cursor.executemany("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", users)
 
         # Clients
-        clients = [(f"Client {i}", f"client{i}@example.com", f"12345678{i:02d}", f"Adresse {i}") for i in range(1, 16)]
+        clients = [(f"Client {i}", f"client{i}@example.com", f"12345678{i:02d}", f"Adresse {i}") for i in range(1, 30)]
         cursor.executemany("INSERT INTO clients (name, email, phone, address) VALUES (?, ?, ?, ?)", clients)
 
         # Produits
-        products = [(f"Produit {i}", f"Description {i}", 10.0 + i * 2, i * 2) for i in range(1, 16)]
+        products = [(f"Produit {i}", f"Description {i}", 10.0 + i * 2, i * 2) for i in range(1, 30)]
         cursor.executemany("INSERT INTO products (name, description, price, stock_quantity) VALUES (?, ?, ?, ?)", products)
 
         # Factures et articles
         invoices, invoice_items = [], []
         TAX_RATE = 0.15
 
-        for invoice_id in range(1, 16):
+        for invoice_id in range(1, 30):
             client_id = (invoice_id % 15) + 1
             total_items_price = 0
 
@@ -171,13 +171,13 @@ def insert_test_data(conn):
 
         # Insérer des notifications
         notifications = [
-            (f"Message de notification {i}",) for i in range(1, 16)
+            (f"Message de notification {i}",) for i in range(1, 30)
         ]
         cursor.executemany("INSERT OR IGNORE INTO notifications (message) VALUES (?)", notifications)
 
         # Insérer des sauvegardes
         backups = [
-            (f"backup_{i}.zip",) for i in range(1, 16)
+            (f"backup_{i}.zip",) for i in range(1, 30)
         ]
         cursor.executemany("INSERT OR IGNORE INTO backups (backup_path) VALUES (?)", backups)
 

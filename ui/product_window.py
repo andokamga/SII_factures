@@ -53,7 +53,7 @@ def open_product_window():
     product_description_var = tk.StringVar()
     product_stock_var = tk.StringVar()  # Nouveau champ pour le stock
 
-    items_per_page = 10
+    items_per_page = 20
     current_page = 1
     product_database = []
   
