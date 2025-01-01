@@ -82,6 +82,7 @@ def initialize_database():
             client_id INTEGER NOT NULL,
             total REAL NOT NULL,
             tax REAL NOT NULL,
+            reference TEXT NOT NULL DEFAULT (REPLACE(REPLACE(REPLACE(DATETIME('now'), '-', ''), ' ', ''), ':', '')),
             created_at TEXT DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (client_id) REFERENCES clients (id) ON DELETE CASCADE
         )

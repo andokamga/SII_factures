@@ -8,9 +8,10 @@ def open_product_window():
 
     screen_width = product_window.winfo_screenwidth()
     screen_height = product_window.winfo_screenheight()
-    window_width = int(screen_width * 0.9)
-    window_height = int(screen_height * 0.8)
+    window_width = int(screen_width * 1)
+    window_height = int(screen_height * 1)
     product_window.geometry(f"{window_width}x{window_height}")
+    product_window.state('zoomed')
     product_window.config(bg="#f7f7f7")
 
     title_frame = tk.Frame(product_window, bg="#f7f7f7", pady=10)

@@ -5,13 +5,15 @@ from users.auth import authenticate_user
 def open_login_window():
     login_window = tk.Toplevel()
     login_window.title("Connexion")
-    
+    icon = tk.PhotoImage(file="facture.png")
+    login_window.iconphoto(True, icon)
     # Taille de la fenêtre
     screen_width = login_window.winfo_screenwidth()
     screen_height = login_window.winfo_screenheight()
-    window_width = int(screen_width * 0.9)
-    window_height = int(screen_height * 0.8)
+    window_width = int(screen_width * 1)
+    window_height = int(screen_height * 1)
     login_window.geometry(f"{window_width}x{window_height}")
+    login_window.state('zoomed')
     login_window.config(bg="#f0f0f0")
     login_window.resizable(True, True)
     

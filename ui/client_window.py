@@ -9,9 +9,10 @@ def open_client_window():
     # Set window size based on screen dimensions
     screen_width = client_window.winfo_screenwidth()
     screen_height = client_window.winfo_screenheight()
-    window_width = int(screen_width * 0.9)
-    window_height = int(screen_height * 0.8)
+    window_width = int(screen_width * 1)
+    window_height = int(screen_height * 1)
     client_window.geometry(f"{window_width}x{window_height}")
+    client_window.state('zoomed')
     client_window.config(bg="#f7f7f7")
 
     # Title Frame
