@@ -1,12 +1,15 @@
 import tkinter as tk
 from ui.main_window import launch_main_window
 from users.auth import authenticate_user
+import sys
+import os
+from tkinter import Tk, Label
 
 def open_login_window():
     login_window = tk.Toplevel()
     login_window.title("Connexion")
-    icon = tk.PhotoImage(file="facture.png")
-    login_window.iconphoto(True, icon)
+    #icon = tk.PhotoImage(file="facture.png")
+    #login_window.iconphoto(True, icon)
     # Taille de la fenêtre
     screen_width = login_window.winfo_screenwidth()
     screen_height = login_window.winfo_screenheight()

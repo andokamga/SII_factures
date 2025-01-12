@@ -13,7 +13,6 @@ def launch_main_window():
     # Fenêtre principale
     main_window = tk.Toplevel()
     main_window.title("Interface Principale")
-    
     # Taille dynamique de la fenêtre (100% de l'écran)
     screen_width = main_window.winfo_screenwidth()
     screen_height = main_window.winfo_screenheight()
