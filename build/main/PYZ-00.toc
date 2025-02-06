@@ -1282,14 +1282,6 @@
    'C:\\Users\\HP ELITEBOOK '
    'MT43\\AppData\\Roaming\\Python\\Python39\\site-packages\\reportlab\\rl_settings.py',
    'PYMODULE'),
-  ('restauration',
-   'C:\\Users\\HP ELITEBOOK '
-   'MT43\\Desktop\\Project\\SII_Factures\\restauration\\__init__.py',
-   'PYMODULE'),
-  ('restauration.restauration',
-   'C:\\Users\\HP ELITEBOOK '
-   'MT43\\Desktop\\Project\\SII_Factures\\restauration\\restauration.py',
-   'PYMODULE'),
   ('runpy', 'C:\\Program Files\\Python39\\lib\\runpy.py', 'PYMODULE'),
   ('secrets', 'C:\\Program Files\\Python39\\lib\\secrets.py', 'PYMODULE'),
   ('selectors', 'C:\\Program Files\\Python39\\lib\\selectors.py', 'PYMODULE'),
@@ -1328,17 +1320,8 @@
   ('tkinter.constants',
    'C:\\Program Files\\Python39\\lib\\tkinter\\constants.py',
    'PYMODULE'),
-  ('tkinter.dialog',
-   'C:\\Program Files\\Python39\\lib\\tkinter\\dialog.py',
-   'PYMODULE'),
-  ('tkinter.filedialog',
-   'C:\\Program Files\\Python39\\lib\\tkinter\\filedialog.py',
-   'PYMODULE'),
   ('tkinter.messagebox',
    'C:\\Program Files\\Python39\\lib\\tkinter\\messagebox.py',
-   'PYMODULE'),
-  ('tkinter.simpledialog',
-   'C:\\Program Files\\Python39\\lib\\tkinter\\simpledialog.py',
    'PYMODULE'),
   ('tkinter.ttk',
    'C:\\Program Files\\Python39\\lib\\tkinter\\ttk.py',
@@ -1385,10 +1368,6 @@
   ('ui.register_window',
    'C:\\Users\\HP ELITEBOOK '
    'MT43\\Desktop\\Project\\SII_Factures\\ui\\register_window.py',
-   'PYMODULE'),
-  ('ui.restauration_window',
-   'C:\\Users\\HP ELITEBOOK '
-   'MT43\\Desktop\\Project\\SII_Factures\\ui\\restauration_window.py',
    'PYMODULE'),
   ('unittest',
    'C:\\Program Files\\Python39\\lib\\unittest\\__init__.py',

@@ -6,7 +6,6 @@ from ui.invoice_window import open_invoice_window
 from ui.client_window import open_client_window
 from ui.register_window import open_register_window
 from users.auth import get_username_from_file
-from ui.restauration_window import open_backup_restore_window
 from ui.Invoice_handling_window import open_invoice_handling_window
 
 def launch_main_window():
@@ -108,16 +107,12 @@ def launch_main_window():
     def open_invoice_management():
         open_invoice_handling_window()
 
-    def open_backup():
-        open_backup_restore_window()
-
     # Boutons pour accéder aux différentes interfaces
     buttons = [
         ("Gestion des Utilisateurs", open_user_management),
         ("Gestion des Clients", open_client),
         ("Gestion des Produits", open_product),
         ("Création des Factures", open_invoice),
-        ("Sauvegarde/Restauration", open_backup),
         ("Gestion des Factures", open_invoice_management)
     ]
 

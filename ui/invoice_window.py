@@ -64,7 +64,7 @@ def open_invoice_window():
     # Search Client Section
     search_frame = tk.Frame(invoice_window, bg="#f7f7f7", pady=5)
     search_frame.pack(fill="x", padx=20, pady=(10, 0))
-    tk.Label(search_frame, text="Téléphone du client :", bg="#f7f7f7", font=("Arial", 14)).pack(side="left", padx=5)
+    tk.Label(search_frame, text="Client ID :", bg="#f7f7f7", font=("Arial", 14)).pack(side="left", padx=5)
     tk.Entry(search_frame, textvariable=client_search_var, font=("Arial", 14), width=20).pack(side="left", padx=5)
     tk.Button(
         search_frame,
@@ -89,7 +89,7 @@ def open_invoice_window():
 
         try:
         # Appeler la fonction pour filtrer les clients
-            result = filter_clients_by_phone(search_query, 1, 1)
+            result = filter_clients_by_id(search_query, 1, 1)
             clients = result["clients"]
 
         # Vérifier si des clients ont été trouvés

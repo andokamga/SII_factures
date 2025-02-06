@@ -202,3 +202,58 @@ def get_invoices_by_phone(phone, page=1, items_per_page=10):
         }
     finally:
         conn.close()
+
+def get_invoices_by_id(client_id, page=1, items_per_page=10):
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+
+        # Vérifier si le client existe avec l'ID donné
+        cursor.execute("SELECT id FROM clients WHERE id = ?", (client_id,))
+        client = cursor.fetchone()
+
+        if not client:
+            print(f"Aucun client trouvé avec l'ID {client_id}.")
+            return {
+                "invoices": [],
+                "total_invoices": 0,
+                "total_pages": 0,
+                "current_page": page,
+                "items_per_page": items_per_page
+            }
+
+        print(f"Client ID trouvé : {client_id}")
+        offset = (page - 1) * items_per_page
+
+        # Récupérer les factures du client avec pagination
+        cursor.execute(
+            "SELECT * FROM invoices WHERE client_id = ? LIMIT ? OFFSET ?",
+            (client_id, items_per_page, offset)
+        )
+        invoices = cursor.fetchall()
+
+        # Compter le nombre total de factures du client
+        cursor.execute("SELECT COUNT(*) FROM invoices WHERE client_id = ?", (client_id,))
+        total_invoices = cursor.fetchone()[0]
+        total_pages = (total_invoices + items_per_page - 1) // items_per_page
+
+        return {
+            "invoices": invoices,
+            "total_invoices": total_invoices,
+            "total_pages": total_pages,
+            "current_page": page,
+            "items_per_page": items_per_page
+        }
+
+    except Exception as e:
+        print(f"Erreur lors de la récupération des factures : {e}")
+        return {
+            "invoices": [],
+            "total_invoices": 0,
+            "total_pages": 0,
+            "current_page": page,
+            "items_per_page": items_per_page
+        }
+
+    finally:
+        conn.close()

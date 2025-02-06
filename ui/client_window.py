@@ -35,7 +35,7 @@ def open_client_window():
     search_var = tk.StringVar()
 
     tk.Label(
-        search_frame, text="Téléphone :", bg="#f7f7f7", font=("Arial", 14)
+        search_frame, text="Client ID :", bg="#f7f7f7", font=("Arial", 14)
     ).pack(side="left", padx=5)
     search_entry = tk.Entry(search_frame, textvariable=search_var, font=("Arial", 14))
     search_entry.pack(side="left", padx=5)
@@ -122,7 +122,7 @@ def open_client_window():
         # Fetch and display clients
         result = get_all_clients(current_page, items_per_page)
         if search_var.get():
-            result = filter_clients_by_phone(search_var.get(), current_page, items_per_page)
+            result = filter_clients_by_id(search_var.get(), current_page, items_per_page)
         clients = result["clients"]
         client_database.clear()
         for client in clients:
@@ -140,7 +140,7 @@ def open_client_window():
         nonlocal current_page
         result = get_all_clients(current_page, items_per_page)
         if search_var.get():
-            result = filter_clients_by_phone(search_var.get(), current_page, items_per_page)
+            result = filter_clients_by_id(search_var.get(), current_page, items_per_page)
         if current_page < result["total_pages"]:
             current_page += 1
             update_pagination_label(current_page, result["total_pages"])
@@ -150,7 +150,7 @@ def open_client_window():
         nonlocal current_page
         result = get_all_clients(current_page, items_per_page)
         if search_var.get():
-            result = filter_clients_by_phone(search_var.get(), current_page, items_per_page)
+            result = filter_clients_by_id(search_var.get(), current_page, items_per_page)
         if current_page > 1:
             current_page -= 1
             update_pagination_label(current_page, result["total_pages"])
@@ -172,7 +172,7 @@ def open_client_window():
         current_page = 1
         result = get_all_clients(current_page, items_per_page)
         if search_query:
-            result = filter_clients_by_phone(search_query, current_page, items_per_page)
+            result = filter_clients_by_id(search_query, current_page, items_per_page)
             update_client_listbox()
         else:
             update_client_listbox()

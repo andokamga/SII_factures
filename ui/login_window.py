@@ -72,11 +72,6 @@ def open_login_window():
     # Label pour afficher des erreurs
     error_label = tk.Label(frame, text="", font=("Arial", 10), bg="#ffffff", fg="red")
     error_label.grid(row=4, column=0, columnspan=2, pady=5, sticky="n")
-    
-    # Option "Mot de passe oublié"
-    forgot_password_label = tk.Label(frame, text="Mot de passe oublié ?", font=("Arial", 10, "italic"), fg="#007BFF", bg="#ffffff", cursor="hand2")
-    forgot_password_label.grid(row=5, column=0, columnspan=2, pady=10, sticky="n")
-    forgot_password_label.bind("<Button-1>", lambda e: print("Rediriger vers la récupération de mot de passe"))
 
 # Initialisation de la fenêtre principale
 root = tk.Tk()

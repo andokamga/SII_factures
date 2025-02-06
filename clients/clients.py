@@ -210,3 +210,79 @@ def filter_clients_by_phone(phone_query, page=1, items_per_page=15):
 
     finally:
         conn.close()
+
+def filter_clients_by_id(id_query, page=1, items_per_page=15):
+    """
+    Filtre les clients par ID et applique une pagination.
+
+    :param id_query: ID du client à rechercher.
+    :param page: Numéro de la page actuelle (par défaut 1).
+    :param items_per_page: Nombre de clients par page (par défaut 15).
+    :return: Dictionnaire contenant les clients filtrés et les informations de pagination.
+    """
+    conn = get_db_connection()  # Assurez-vous que cette fonction retourne une connexion valide
+    if not conn:
+        print("Erreur : Connexion à la base de données échouée.")
+        return {
+            "clients": [],
+            "total_clients": 0,
+            "total_pages": 0,
+            "current_page": page,
+            "items_per_page": items_per_page
+        }
+
+    try:
+        cursor = conn.cursor()
+
+        # Vérifier si la table existe
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='clients'")
+        if not cursor.fetchone():
+            raise Exception("La table 'clients' n'existe pas.")
+
+        # Recherche exacte par ID
+        query = id_query  # L'ID est une valeur unique, donc pas besoin de LIKE
+        print(f"Requête filtrée : {query}")  # Debug
+
+        # Compter le total des clients correspondant à la recherche
+        cursor.execute("SELECT COUNT(*) FROM clients WHERE id = ?", (query,))
+        total_clients = cursor.fetchone()[0]
+        print(f"Clients totaux trouvés : {total_clients}")  # Debug
+
+        # Calculer le nombre total de pages
+        total_pages = (total_clients + items_per_page - 1) // items_per_page
+
+        # Ajuster la page si elle dépasse les limites
+        if total_pages == 0:
+            page = 1
+        elif page > total_pages:
+            page = total_pages
+
+        # Calculer l'OFFSET pour la pagination
+        offset = (page - 1) * items_per_page
+        print(f"OFFSET : {offset}, LIMIT : {items_per_page}")  # Debug
+
+        # Récupérer les clients correspondant à la recherche avec la pagination
+        cursor.execute(
+            "SELECT * FROM clients WHERE id = ? ORDER BY id ASC LIMIT ? OFFSET ?",
+            (query, items_per_page, offset)
+        )
+        clients = cursor.fetchall()
+        
+        if clients:
+            print("=== Liste des clients ===")
+            for client in clients:
+                print(client)  # Chaque client est une ligne retournée par la requête
+        else:
+            print("Aucun client trouvé.")
+
+        # Retourner les résultats sous forme de dictionnaire
+        return {
+            "clients": clients,
+            "total_clients": total_clients,
+            "total_pages": total_pages,
+            "current_page": page,
+            "items_per_page": items_per_page
+        }
+
+    finally:
+        conn.close()

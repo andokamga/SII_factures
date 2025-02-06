@@ -53,14 +53,14 @@ def open_invoice_handling_window():
     search_var = tk.StringVar()
 
     tk.Label(
-        search_frame, text="Rechercher par téléphone :", bg="#f7f7f7", font=("Arial", 14)
+        search_frame, text="Client ID :", bg="#f7f7f7", font=("Arial", 14)
     ).pack(side="left", padx=5)
     search_entry = tk.Entry(search_frame, textvariable=search_var, font=("Arial", 14))
     search_entry.pack(side="left", padx=5)
     tk.Button(
         search_frame,
         text="Rechercher",
-        command=lambda: search_invoices_by_phone(),
+        command=lambda: search_invoices_by_id(),
         bg="#2980B9",
         fg="white",
         font=("Arial", 14),
@@ -95,11 +95,11 @@ def open_invoice_handling_window():
             invoice_listbox.insert(tk.END, invoice_text)
         update_pagination_label(result["current_page"], result["total_pages"])
 
-    def search_invoices_by_phone():
+    def search_invoices_by_id():
         """Rechercher les factures par numéro de téléphone."""
-        phone = search_var.get().strip()
-        if phone:
-            result = get_invoices_by_phone(phone, page=current_page, items_per_page=items_per_page)
+        id = search_var.get().strip()
+        if id:
+            result = get_invoices_by_id(id, page=current_page, items_per_page=items_per_page)
             invoices = result["invoices"]
             if invoices:
                 update_invoice_listbox(invoices)
